@@ -213,7 +213,10 @@ void apply_to_each_term(polynomial *p, void (*transform)(struct term *)){
     if( !p || !transform){
         // invalid polynomial
     }
-    
+    while (p){
+        transform(p);
+        p = p->next;
+    }
 }
 
 /*Code needs to be implemented
