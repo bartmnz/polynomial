@@ -131,41 +131,13 @@ void append_poly(polynomial *a, polynomial *b){
  *Returns a newly-malloced polynomial that is the sum of the two arguments
  */
 polynomial *add_poly(polynomial *a, polynomial *b){
-    if (!a || !b){
-        return NULL;
-    }
-    polynomial *ret = malloc(sizeof(polynomial));
-    while ( a || b ){
-        if (!a){
-            append_poly(ret, b);
-            b = b->next;
-        }
-        else if (!b){
-            append_poly(ret, a);
-            a = a->next;
-        }
-        else if (a->exp == b->exp){
-            a->coeff += b->coeff;
-            append_poly(ret, a);
-            a = a->next;
-            b = b->next;
-        }
-        else if (a->exp > b->exp){
-            append_poly(ret, a);
-            a = a->next;
-        }
-        else{ // b > a
-            append_poly(ret, b);
-            b = b->next;
-        }
-    }
-    return ret;
+    return addOrSub_poly(a,b,true);
 }
-
 /*
- *Returns a newly-malloced polynomial that is the sum of the two arguments
+ *helper function for add and subract .. the code is the same for both with one dfference
+ * boolean set to true for add and false for subtract
  */
-polynomial *sub_poly(polynomial *a, polynomial *b){
+polynomial *addOrSub_poly(polynomial *a, polynomial *b, bool add){
     if (!a || !b){
         return NULL;
     }
@@ -181,7 +153,11 @@ polynomial *sub_poly(polynomial *a, polynomial *b){
             a = a->next;
         }
         else if (a->exp == b->exp){
-            a->coeff -= b->coeff;
+            if( add){
+                a->coeff += b->coeff;
+            } else{
+                a->coeff -= b->coeff;
+            }
             append_poly(ret, a);
             a = a->next;
             b = b->next;
@@ -195,7 +171,15 @@ polynomial *sub_poly(polynomial *a, polynomial *b){
             b = b->next;
         }
     }
-    return ret;
+    return ret;    
+}
+
+
+/*
+ *Returns a newly-malloced polynomial that is the sum of the two arguments
+ */
+polynomial *sub_poly(polynomial *a, polynomial *b){
+    return addOrSub_poly(a,b,false);
 }
 
 /*
