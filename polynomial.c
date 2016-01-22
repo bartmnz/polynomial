@@ -228,9 +228,14 @@ void apply_to_each_term(polynomial *p, void (*transform)(struct term *)){
  */
 double eval_poly(polynomial *p, double x){
     if(!p || !x){
-        // invalid polynomial
+        return 0;
     }
-    return 0;
+    double sum;
+    while (p){
+        sum += p->coeff * pow(x, p->exp);
+        p = p->next;
+    }
+    return sum;
 }
 
 //here for compile
