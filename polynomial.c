@@ -192,8 +192,16 @@ polynomial *sub_poly(polynomial *a, polynomial *b){
  *returns true if the two arguments have the same terms; false otherwise
  */
 bool is_eual(polynomial *a, polynomial *b){
-     if (!a || !b){
+    if (!a || !b){
         // invalid polynomial
+    }
+    while( a && b){
+        if ( a->exp == b->exp && a->coeff == b->coeff){
+            a = a->next;
+            b = b->next;
+            continue;
+        }
+        return false;
     }
     return true;
 }
