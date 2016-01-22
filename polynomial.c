@@ -6,7 +6,8 @@
  * code provided as part of assignment
  */
 struct term *make_term( int coeff, int exp){
-    struct term *node = malloc(sizeof(*node));
+    struct term *node = malloc(sizeof(struct term));
+    memset(node, 0, sizeof(struct term));
     if(node){
         node->coeff = coeff;
         node->exp = exp;
@@ -18,9 +19,10 @@ struct term *make_term( int coeff, int exp){
 /*free all terms of a polynomial. Does not error check for circular linked lists
  *code provided as part of assignment
  */
-void poly_free( polynomial * eqn){
+void poly_free( polynomial *eqn){
     while(eqn){
         struct term *tmp = eqn->next;
+        printf("freeing coeef = %d\n", eqn->coeff);//for debugging
         free(eqn);
         eqn=tmp;
     }
@@ -75,7 +77,9 @@ char *poly_to_string(polynomial *p){
         return NULL;
     }
     fseek(file, 0, SEEK_END); 
-    char *string = malloc(ftell(file)); // allocate enough memory to store the string
+    int size = ftell(file); 
+    char *string = malloc(size+1); // allocate enough memory to store the string
+    memset(string, 0, size+1);
     if( ! string){
         fprintf(stderr, "ERROR: unable to allocate memory");
         return NULL;
@@ -95,6 +99,8 @@ char *poly_to_string(polynomial *p){
         fprintf(stderr, "ERROR: unable to delete temporary file. %s\n", filename);
         return NULL;
     }
+    fclose(file);
+    fprintf(stdout, "in set = %lu\n", (unsigned long) string );
     return string;
 }
 /*
@@ -106,17 +112,19 @@ void append_poly(polynomial *a, polynomial *b){
     if (!a || !b){
         return;
     }
-    if(! a->next && ! a->coeff && ! a->exp ){ // unitialized list
+    if(!a->coeff && !a->exp ){ // unitialized list
         a->coeff = b->coeff;
         a->exp = b->exp;
+        return;
     }
-    polynomial *temp = malloc(sizeof(polynomial *));
-    while( a->next ){
-        a = a->next;
-    }
+    polynomial *temp = malloc(sizeof(polynomial));
+    memset(temp, 0, sizeof(polynomial));
     temp->coeff = b->coeff;
     temp->exp = b->exp;
     temp->next = NULL;
+    while( a->next ){
+        a = a->next;
+    }
     a->next = temp;
 }
 
@@ -127,7 +135,7 @@ polynomial *add_poly(polynomial *a, polynomial *b){
     if (!a || !b){
         return NULL;
     }
-    polynomial *ret = malloc(sizeof(polynomial *));
+    polynomial *ret = malloc(sizeof(polynomial));
     while ( a || b ){
         if (!a){
             append_poly(ret, b);
@@ -151,7 +159,6 @@ polynomial *add_poly(polynomial *a, polynomial *b){
             append_poly(ret, b);
             b = b->next;
         }
-        fprintf(stdout, "%s\n", poly_to_string(ret));
     }
     return ret;
 }
@@ -163,7 +170,8 @@ polynomial *sub_poly(polynomial *a, polynomial *b){
     if (!a || !b){
         return NULL;
     }
-    polynomial *ret = malloc(sizeof(polynomial *));
+    polynomial *ret = malloc(sizeof(polynomial));
+    memset(ret, 0, sizeof(polynomial));
     while ( a || b ){
         if (!a){
             append_poly(ret, b);
@@ -187,7 +195,6 @@ polynomial *sub_poly(polynomial *a, polynomial *b){
             append_poly(ret, b);
             b = b->next;
         }
-        fprintf(stdout, "%s\n", poly_to_string(ret));
     }
     return ret;
 }
@@ -230,7 +237,7 @@ double eval_poly(polynomial *p, double x){
     if(!p || !x){
         return 0;
     }
-    double sum;
+    double sum = 0;
     while (p){
         sum += p->coeff * pow(x, p->exp);
         p = p->next;
