@@ -1,4 +1,5 @@
 #include "polynomial.h"
+#include "tester.h"
 
 /*mallocs a new term of a polynomial with coeff and exp as the parameters
  *returns malloc'd struct term
@@ -46,12 +47,54 @@ void poly_print(polynomial *eqn){
 
 /*Code needs to be implemented
  * Returns a newly-malloced string that displays the given polynomial
+ * Creates (or over-wrights) and deletes a tempory file poly_to_string_tmp.txt 
  */
 char *poly_to_string(polynomial *p){
     if(!p){
-        // invalid polynomial
+        return NULL;
     }
-    char *string = "need to implement";
+    FILE *file;
+    const char filename[] = "poly_to_string_tmp.txt";
+    file = fopen(filename, "w");
+    while(p && file){
+        if (p->coeff){
+        fprintf(file, "%s%d", p->coeff > 0 ? "+" : "", p->coeff);
+        }
+        if(p->exp > 1 ){
+            fprintf(file, "x^%d", p->exp);
+        } else if(p->exp == 1){
+            fprintf(file, "x");
+        }
+        fprintf(file," ");
+        p = p->next;
+    }
+    fclose(file);
+    file = fopen(filename, "r"); // re-open the file to read it.
+    if (!file){
+        fprintf(stderr, "ERROR: unable to open temporary file. %s\n", filename);
+        return NULL;
+    }
+    fseek(file, 0, SEEK_END); 
+    char *string = malloc(ftell(file)); // allocate enough memory to store the string
+    if( ! string){
+        fprintf(stderr, "ERROR: unable to allocate memory");
+        return NULL;
+    }
+    fseek(file, 0, SEEK_SET);
+    char tmp;
+    int count = 0;
+    while( (tmp = fgetc(file)) != EOF){
+            string[count] = tmp;
+            count++;
+    }
+    string[count] = '\0';
+    // clean up after ourselves
+    int check; 
+    check = remove(filename);
+    if ( check != 0){
+        fprintf(stderr, "ERROR: unable to delete temporary file. %s\n", filename);
+        return NULL;
+    }
     return string;
 }
 
@@ -107,5 +150,6 @@ double eval_poly(polynomial *p, double x){
 
 //here for compile
 int main (void){
+    test();
     return 1;
 }
