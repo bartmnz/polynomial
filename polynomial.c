@@ -156,10 +156,36 @@ polynomial *add_poly(polynomial *a, polynomial *b){
  *Returns a newly-malloced polynomial that is the sum of the two arguments
  */
 polynomial *sub_poly(polynomial *a, polynomial *b){
-        if (!a || !b){
-        // invalid polynomial
+    if (!a || !b){
+        return NULL;
     }
-    return a;
+    polynomial *ret = malloc(sizeof(polynomial *));
+    while ( a || b ){
+        if (!a){
+            append_poly(ret, b);
+            b = b->next;
+        }
+        else if (!b){
+            append_poly(ret, a);
+            a = a->next;
+        }
+        else if (a->exp == b->exp){
+            a->coeff -= b->coeff;
+            append_poly(ret, a);
+            a = a->next;
+            b = b->next;
+        }
+        else if (a->exp > b->exp){
+            append_poly(ret, a);
+            a = a->next;
+        }
+        else{ // b > a
+            append_poly(ret, b);
+            b = b->next;
+        }
+        fprintf(stdout, "%s\n", poly_to_string(ret));
+    }
+    return ret;
 }
 
 /*Code needs to be implemented
