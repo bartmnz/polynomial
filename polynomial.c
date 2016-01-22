@@ -106,6 +106,10 @@ void append_poly(polynomial *a, polynomial *b){
     if (!a || !b){
         return;
     }
+    if(! a->next && ! a->coeff && ! a->exp ){ // unitialized list
+        a->coeff = b->coeff;
+        a->exp = b->exp;
+    }
     polynomial *temp = malloc(sizeof(polynomial *));
     while( a->next ){
         a = a->next;
