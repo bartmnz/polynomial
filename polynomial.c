@@ -97,15 +97,59 @@ char *poly_to_string(polynomial *p){
     }
     return string;
 }
+/*
+ *helper function for add and subtract poly. places the first term of poly b 
+ *at the end of poly a by mallocing new space. 
+ */
+
+void append_poly(polynomial *a, polynomial *b){
+    if (!a || !b){
+        return;
+    }
+    polynomial *temp = malloc(sizeof(polynomial *));
+    while( a->next ){
+        a = a->next;
+    }
+    temp->coeff = b->coeff;
+    temp->exp = b->exp;
+    temp->next = NULL;
+    a->next = temp;
+}
 
 /*Code needs to be implemented
  *Returns a newly-malloced polynomial that is the sum of the two arguments
  */
 polynomial *add_poly(polynomial *a, polynomial *b){
     if (!a || !b){
-        // invalid polynomial
+        return NULL;
     }
-    return a;
+    polynomial *ret = malloc(sizeof(polynomial *));
+    while ( a || b ){
+        if (!a){
+            append_poly(ret, b);
+            b = b->next;
+        }
+        else if (!b){
+            append_poly(ret, a);
+            a = a->next;
+        }
+        else if (a->exp == b->exp){
+            a->coeff += b->coeff;
+            append_poly(ret, a);
+            a = a->next;
+            b = b->next;
+        }
+        else if (a->exp > b->exp){
+            append_poly(ret, a);
+            a = a->next;
+        }
+        else{ // b > a
+            append_poly(ret, b);
+            b = b->next;
+        }
+        fprintf(stdout, "%s\n", poly_to_string(ret));
+    }
+    return ret;
 }
 
 /*Code needs to be implemented

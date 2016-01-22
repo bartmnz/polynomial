@@ -18,6 +18,7 @@ struct term *make_term( int coeff, int exp);
 void poly_free( polynomial * eqn);
 void poly_print(polynomial *eqn);
 char *poly_to_string(polynomial *p);
+void append_poly(polynomial *a, polynomial *b);
 polynomial *add_poly(polynomial *a, polynomial *b);
 polynomial *sub_poly(polynomial *a, polynomial *b);
 bool is_eual(polynomial *a, polynomial *b);
