@@ -195,7 +195,7 @@ polynomial *sub_poly(polynomial *a, polynomial *b){
 /*Code needs to be implemented
  *returns true if the two arguments have the same terms; false otherwise
  */
-bool is_eual(polynomial *a, polynomial *b){
+bool is_equal(polynomial *a, polynomial *b){
     if (!a || !b){
         // invalid polynomial
     }
