@@ -22,7 +22,6 @@ struct term *make_term( int coeff, int exp){
 void poly_free( polynomial *eqn){
     while(eqn){
         struct term *tmp = eqn->next;
-        printf("freeing coeef = %d\n", eqn->coeff);//for debugging
         free(eqn);
         eqn=tmp;
     }
@@ -47,7 +46,7 @@ void poly_print(polynomial *eqn){
     poly_print(eqn->next);
 }
 
-/*Code needs to be implemented
+/*
  * Returns a newly-malloced string that displays the given polynomial
  * Creates (or over-wrights) and deletes a tempory file poly_to_string_tmp.txt 
  */
@@ -103,11 +102,11 @@ char *poly_to_string(polynomial *p){
     fprintf(stdout, "in set = %lu\n", (unsigned long) string );
     return string;
 }
+
 /*
  *helper function for add and subtract poly. places the first term of poly b 
  *at the end of poly a by mallocing new space. 
  */
-
 void append_poly(polynomial *a, polynomial *b){
     if (!a || !b){
         return;
@@ -128,7 +127,7 @@ void append_poly(polynomial *a, polynomial *b){
     a->next = temp;
 }
 
-/*Code needs to be implemented
+/*
  *Returns a newly-malloced polynomial that is the sum of the two arguments
  */
 polynomial *add_poly(polynomial *a, polynomial *b){
@@ -163,7 +162,7 @@ polynomial *add_poly(polynomial *a, polynomial *b){
     return ret;
 }
 
-/*Code needs to be implemented
+/*
  *Returns a newly-malloced polynomial that is the sum of the two arguments
  */
 polynomial *sub_poly(polynomial *a, polynomial *b){
@@ -199,7 +198,7 @@ polynomial *sub_poly(polynomial *a, polynomial *b){
     return ret;
 }
 
-/*Code needs to be implemented
+/*
  *returns true if the two arguments have the same terms; false otherwise
  */
 bool is_equal(polynomial *a, polynomial *b){
@@ -230,8 +229,9 @@ void apply_to_each_term(polynomial *p, void (*transform)(struct term *)){
     }
 }
 
-/*Code needs to be implemented
+/*
  *Evaluates the polynomial by substituting x in the variable of the polynomial
+ *Return is double value of the returned polynomial
  */
 double eval_poly(polynomial *p, double x){
     if(!p || !x){
