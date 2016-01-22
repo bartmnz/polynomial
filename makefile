@@ -1,12 +1,14 @@
 CFLAGS= -std=c11 -Wall -Werror -Wextra -pedantic -Wno-deprecated  -Wstack-usage=1024 
 
+CC = gcc
+
 TARGET1=polynomial
 
 OBJS1=polynomial.o 
 
-.PHONY: clean debug profile python
+.PHONY: clean debug profile 
 
-$(TARGET1): $(OBJS1)
+$(TARGET1): $(OBJS1) -lm
 
 debug: CFLAGS+=-g
 debug: $(TARGET1)
