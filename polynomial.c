@@ -99,7 +99,7 @@ char *poly_to_string(polynomial *p){
         return NULL;
     }
     fclose(file);
-    fprintf(stdout, "in set = %lu\n", (unsigned long) string );
+ //   fprintf(stdout, "in set = %lu\n", (unsigned long) string );
     return string;
 }
 
@@ -228,6 +228,49 @@ double eval_poly(polynomial *p, double x){
     }
     return sum;
 }
+
+/*Function multiplies polynomial a by polynomial b and  
+ * Returns  the result as a newly malloc'd polynomial 
+ *
+ */
+polynomial *multiply_poly(polynomial *a, polynomial *b){
+     polynomial *b_start = b;
+     // non malloc'd poly temp
+     polynomial out_loop = {0};
+     // non malloc'd poly intermediate 
+     polynomial in_loop = {0};
+     polynomial *temp = {0};
+     // for each term in a multiply by b
+     while( a ){
+        while (b){
+            // malloc a new poly to hold result and append to intermediate,
+            polynomial *tmp = make_term(a->coeff * b->coeff, a->exp + b->exp );
+            append_poly(&in_loop, tmp);
+            free(tmp);
+            b = b->next;
+            
+            // jus
+        }
+        // add temp and intermediate polynomial -- store in temp
+        temp = add_poly(&out_loop, &in_loop);
+        free(in_loop.next);
+        in_loop.coeff = 0;
+        in_loop.exp = 0;
+        in_loop.next = NULL;
+        poly_free(out_loop.next);
+        out_loop.coeff = temp->coeff;
+        out_loop.exp = temp->exp;
+        out_loop.next = temp->next;
+        free(temp);
+        b = b_start;
+        a = a->next;
+     }
+     // create malloc'd poly results 
+     polynomial *results = make_term(out_loop.coeff, out_loop.exp);
+     // assign temp to results;
+     results->next = out_loop.next;
+     return results;
+ }
 
 //here for compile
 int main (void){
